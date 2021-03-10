@@ -1,0 +1,111 @@
+●    Seleziona tutti gli ospiti che sono stati identificati con la carta di identità
+SELECT * FROM `ospiti`
+WHERE document_type = "ci"
+
+
+
+●    Seleziona tutti gli ospiti che sono nati dopo il 1988
+
+SELECT * FROM `ospiti` 
+WHERe date_of_birth > "1988-01-01"
+
+
+●    Seleziona tutti gli ospiti che hanno più di 20 anni (al momento dell’esecuzione della query)
+
+SELECT `name`,`lastname`,`date_of_birth`,TIMESTAMPDIFF(YEAR,`date_of_birth`, CURRENT_TIMESTAMP ) AS age
+FROM `ospiti`
+WHERE TIMESTAMPDIFF(YEAR,`date_of_birth`, CURRENT_TIMESTAMP ) > 20;
+
+
+
+●    Seleziona tutti gli ospiti il cui nome inizia con la D
+
+
+SELECT * FROM `ospiti` 
+WHERE name LIKE 'D%'
+
+
+
+●    Calcola il totale degli ordini accepted
+
+SELECT SUM(price) FROM `pagamenti` 
+WHERE status = "accepted"
+
+
+●    Qual è il prezzo massimo pagato?
+
+SELECT MAX(price) FROM `pagamenti`
+WHERE status = "accepted"
+
+
+●    Seleziona gli ospiti riconosciuti con patente e nati nel 1975
+
+SELECT * FROM `ospiti` 
+WHERE document_type = "CI"
+     OR date_of_birth = 1975-01-01
+
+
+
+
+●    Quanti paganti sono anche ospiti?
+
+
+SELECT * FROM `paganti` 
+WHERE ospite_id IS NOT NULL
+
+
+●    Quanti posti letto ha l’hotel in totale?
+
+SELECT SUM(beds) FROM `stanze`
+
+
+------------------------------------------------------------------------------------
+
+Group by
+
+●    Conta gli ospiti raggruppandoli per anno di nascita
+
+SELECT YEAR(date_of_birth),COUNT(*)
+FROM `ospiti` 
+GROUP BY YEAR(date_of_birth)
+
+
+●    Somma i prezzi dei pagamenti raggruppandoli per status
+
+SELECT SUM(price), status
+FROM `pagamenti`
+GROUP BY(status)
+
+
+
+●    Conta quante volte è stata prenotata ogni stanza
+
+SELECT stanza_id , COUNT(stanza_id)
+FROM `prenotazioni` 
+GROUP BY stanza_id
+
+
+
+
+-----------------------------------------------------------------------------------------
+
+Join
+●    Come si chiamano gli ospiti che hanno fatto più di due prenotazioni?
+
+SELECT COUNT(ospite_id), ospiti.name
+FROM `prenotazioni_has_ospiti`
+LEFT JOIN `ospiti`
+ON ospiti.id = `ospite_id`
+GROUP BY ospiti.name
+HAVING COUNT(*) > 2;
+
+
+
+
+●    Stampare tutti gli ospiti per ogni prenotazione
+
+SELECT * FROM `prenotazioni_has_ospiti` 
+join ospiti
+ON prenotazioni_has_ospiti.ospite_id = ospite_id
+
+
